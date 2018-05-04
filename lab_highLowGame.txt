@@ -1,0 +1,223 @@
+Programming for Video Game Development Spring 2018
+
+Lab 1: High Low Game in Unity (2D project)
+
+Purpose: The purpose of this lab is to develop a rudimentary, high-low
+dice game, in small increments, and repeadly refactor the program to
+add more functionality to the game in progressive steps. The lab
+starts with writing code that simply outputs an example script of the
+game. Then, parts of the script are refactored in "baby steps" until
+the entire game is functional.
+
+Game rules: The player with the highest roll of a single 6 sided die
+wins. The player bets against the house with a starting bank of
+$100. Ties go to the house.
+
+Concepts: GUI design, iterative development, text output, string and
+integer variables, math operators, string operators, Flow control
+(conditionals)
+
+I. Open Unity and Create a 2D Unity Project called HighLowGame
+
+II. File menu -> Save Scene As... name your scene - MainScene
+
+III. Change the background color of the main camera to a lighter
+color, so default black fonts on text show up better.
+  a. Click on Main Camera in the Hierarchy
+  b. In the Inspector, under Camera, click on the Background color bar
+  c. Pick a lighter color from the Unity Color Picker
+  d. Add it as a Preset to be reused in the next step. Under Presets, click on the little empty box.
+
+IV. Change the background color of the Scene editor window -
+  a. Edit menu ->Preferences... -> Colors -
+  b. Under the Scene heading, select the first color bar labeled Background
+  c. Select the color you set as a preset in III d.
+  d. Dismiss the Color dialog.
+
+V. Place the initial GUI Elements in the game by Right-Clicking in the
+Hierarchy tab of the Unity Editor and selecting UI-> Text Note: After
+the first Text element is placed, a Canvas will appear as a parent in
+the Hierarchy to the Text element. The remaining UI elements should be
+added by selecting the Canvas and then right-clicking so that each
+subsequent UI element is under the Canvas. If an element gets created
+outside of the Canvas or under another element, then it an be dragged
+to the right place under the Canvas with the mouse.
+  1. "Name label" (Text)
+     a. rename to TextLabelName in Hierarchy (Either right-click and select
+        Rename or click 2 times slowly.)
+     b. In the Inspector, change the text in the input box labeled "Text" to Name:
+
+  2. "Name textbox" (InputField)
+    a. rename to InputFieldName
+    b. Click on arrow to expand InputFieldName
+    c. Click on Placeholder in the Hierarchy and change Text in Inspector to "Enter name..."
+
+  3. "Roll button" (Button)
+    a. rename to ButtonRoll
+    b. Click on arrow to expand ButtonRoll
+    c. Click on Text in the Hierarchy and change Text in Inspector to "Roll"
+
+  4. "Game Play label" (Text)
+    a. rename to TextLabelGamePlay
+    b. In the Inspector, change the text in the input box labeled "Text" to Game Play:
+
+  5. "Display textbox" (Text)
+    a. rename to TextDisplayGamePlay
+    b. User the resize handles to make it a big box (400 x 300 in Rect
+       Transform Width and Height, respectively)
+    Note: You can also change the size of an item by typing into the Width and Height boxes.
+
+VI. Display a typical game play interaction by appending hard-coded
+text to the TextDisplayGamePlay such as:
+    Hello, Mike
+    Your bank is $100.
+    You bet $10.
+    I rolled a 5.
+    You rolled a 3.
+    You lose.
+    Your bank is $90.
+
+  1. Create a Unity Game Object under which you will have a script for a basic game controller
+    a. Right click in the Hierarchy and select Create Empty.
+    b. Rename the GameObject to GameObjectGameController
+    c. In the Inspector, click on Add Component.
+    d. Scroll down and select New Script.
+    e. Rename the script GameController
+    f. Right-click on the GameController script in the Inspector and select Edit Script.
+
+  2. Add some basic code to support changing the text in the Game Play display.
+    a. At the very top of the file, add
+
+      using UnityEngine.UI;
+
+    b. Declare a variable to access the game play display
+      // Insert after class declaration and before Start() method
+
+      Text TextDisplayGamePlay;
+
+    c. In Start() method which runs one time for the GameObject, get a
+    reference to the Text game object
+
+      TextDisplayGamePlay = GameObject.Find("Canvas/TextDisplayGamePlay").GetComponent<Text>();
+
+    d. Put some text into the output textbox's text
+
+      TextDisplayGamePlay.Text = "Hello, ... \n"
+        + "rest of script goes about here";
+
+    Note Use the special character '\n' to force newlines in the text.
+
+VII. Add rudimentary (trivial) high low game programming in the button click method.
+  1. Add a method to handle the button click (after the Update() method's closing curly brace
+    a. Add a new method called handleButtonRollClicked()
+
+    public void  handleButtonRollClicked()
+    {
+      Debug.Log( "handleButtonRollClicked() started");
+    }
+
+  2 . Link this new method to the button in the Inspector
+    a.Select the ButtonRoll in the Hierarchy
+    b. In the Inspector, click on the plus (+) symbol in the On Click() section
+    c. Change from "Runtime Only" to "Editor and Runtime"
+    d. Change "None (Object)" to GameObjectGameController by clicking
+    on tiny circle and selecting GameObjectGameController from the
+    dialog box.
+    e. Change "No Function" in pulldown to "GameController->handleButtonRollClicked()"
+    f. TEST!!! Try pressing the Play button in the Unity Editor to run
+    your game and then pressing the Roll button on your game. Each
+    time the button is pressed, the following should appear in the
+    Console tab:
+
+      handleButtonRollClicked() started
+      UnityEngine.Debug:Log(Object)
+
+
+VIII. Get the text from the Name text box and added it to the display textbox's text
+  1. Declare a new variable for the text section of the InputField
+    // Insert after class declaration and before Start() method
+
+    Text TextName;
+
+  2. In Start()  method which runs one time for the GameObject, get a reference to the Text part of the Name InoputField
+
+    TextName = GameObject.Find("Canvas/InputFieldName/Text").GetComponent<Text>();
+
+    Note: The Text component under the InputField must be accessed to
+    read the user-entered data. To put default value in the field, you
+    can just access the InputField's text attribute directly. Yes,
+    this is 2 different ways to interact with an interface item in
+    code and it is foolish.
+
+  3. In the button click method, refactor the code to now add the player's name into the game play text:
+
+    TextDisplayGamePlay.Text = TextDisplayGamePlay.Text + TextName.Text;
+
+
+-------------- First lab day stops about here  ---------------
+
+IX. Refactor - implement the bank in the button handler
+  Replace 100 in the string that is placed in the outputTextBox with a variable named bank
+  Replace 90 in the text with a variable named bank
+  Declare a member variable, bank in the highLowMainForm class:
+    // insert after these two lines
+    public class GameController : MonoBehaviour
+     {
+    public int bank = 100;
+
+  Note: Run the game and dialog no longer matches desired output
+  because bet is not yet implemented. This issue will be fixed in the
+  next step.
+
+X. Refactor - implement the bet in the button handler
+  Replace 10 in the text with a variable named bet
+  Declare a member variable, bet in the highLowMainForm class:
+    // insert after this line
+    int bank = 100;
+    int bet = 10;
+
+XI. Refactor - update bank for a loss in the button handler
+              bank = bank - bet;
+
+XII. Refactor - implement the dice roll in the button handler
+            int playerDie = Random.Range(1, 7); // Unity static method that returns an int between 1 and 6.  To get random floats, use floats as parameters.
+      (repeat for computer die)
+
+
+XIII. Refactor - add in logic for wins and loses (remove duplicate line of updating bank for a loss)
+            String result = "lose";
+            if (playerDie > houseDie)
+            {
+                result = "win";
+                bank = bank + bet;
+            }
+            else
+            {
+                bank = bank - bet;
+            }
+------------------------------------------
+Assignment
+1) Allow player to change bet amount (add another Text object and read in the value they input)
+
+2) Remove display text box and replace with interface elements: a text
+box for the bank, one for the bet, labels for each die, and maybe a
+label to indicate winning or losing a round
+
+
+3) Let tie go to player - how does that change the game?
+
+4) Improve the look and feel of the game with a nicer layout and font changes, etc.
+---------------------------------------------------------
+
+Possible Extensions:
+How long does it take to go bust (count the rounds)?Simulate 2 dice
+Make the game two player
+
+Additional C# code snippets
+
+  //convert an int to a string
+  betTextBox.Text = bet.ToString();
+
+  //convert a string to an int
+  bet = Convert.ToInt32(betTextBox.Text);
+
